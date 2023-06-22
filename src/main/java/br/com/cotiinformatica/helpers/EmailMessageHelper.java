@@ -48,5 +48,3 @@ public class EmailMessageHelper {
 		senderImpl.send(messagePreparator);
 	}
 }
-
-

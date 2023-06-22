@@ -5,7 +5,6 @@ import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -50,22 +49,22 @@ public class DashboardController {
 			//consultar todas as contas do usuário dentro do período de datas
 			List<Conta> contas = contaRepository.findAll(dataInicio, dataFim, usuario.getIdUsuario());
 			
-			//somando o total de despesas e receitas
+			//somando o total de receitas e despesas
 			Double totalReceitas = 0.0;
 			Double totalDespesas = 0.0;
 			
-			for (Conta item : contas ){
+			for(Conta item : contas) {
 				if(item.getCategoria().getTipo() == TipoCategoria.RECEITAS)
-					totalReceitas += item.getValor();
+					totalReceitas += item.getValor(); //somar cada receita
 				else if(item.getCategoria().getTipo() == TipoCategoria.DESPESAS)
-					totalDespesas += item.getValor();
+					totalDespesas += item.getValor(); //somar cada despesa
 			}
 			
-			//enviando os dados para a páginas
+			//enviando os dados para a página
 			List<DashboardDto> somatorioContas = new ArrayList<DashboardDto>();
 			somatorioContas.add(new DashboardDto("Total de Receitas", totalReceitas));
 			somatorioContas.add(new DashboardDto("Total de Despesas", totalDespesas));
-			modelAndView.addObject("somatorioContas", somatorioContas);
+			modelAndView.addObject("somatorioContas", somatorioContas);			
 			
 			modelAndView.addObject("dataInicio", dataInicio);
 			modelAndView.addObject("dataFim", dataFim);
@@ -78,5 +77,3 @@ public class DashboardController {
 	}
 
 }
-
-

@@ -4,7 +4,6 @@ import lombok.Data;
 
 @Data
 public class RecuperarSenhaDto {
-	
-	private String email;
-	
+
+	private String email;	
 }

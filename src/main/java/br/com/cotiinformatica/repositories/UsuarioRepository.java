@@ -21,23 +21,18 @@ public class UsuarioRepository {
 		jdbcTemplate = new JdbcTemplate(dataSource);
 	}
 	
-	public void update(Usuario usuario) throws Exception{
-		
-		String query = "update usuario set nome=?, email=?, senha=md5(?) where idusuario=?";
-		Object[] params = {
-				usuario.getNome(),
-				usuario.getEmail(),
-				usuario.getSenha(),
-				usuario.getIdUsuario()
-		};
-		jdbcTemplate.update(query, params);
-		
-	}
-	
 	public void create(Usuario usuario) throws Exception {
 		
 		String query = "insert into usuario(nome, email, senha) values(?, ?, md5(?))";
 		Object[] params = { usuario.getNome(), usuario.getEmail(), usuario.getSenha() };
+		
+		jdbcTemplate.update(query, params);
+	}
+	
+	public void update(Usuario usuario) throws Exception {
+		
+		String query = "update usuario set nome=?, email=?, senha=md5(?) where idusuario=?";
+		Object[] params = { usuario.getNome(), usuario.getEmail(), usuario.getSenha(), usuario.getIdUsuario() };
 		
 		jdbcTemplate.update(query, params);
 	}

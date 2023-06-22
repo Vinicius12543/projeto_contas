@@ -19,10 +19,10 @@ public class RecuperarSenhaController {
 	
 	@Autowired
 	private UsuarioRepository usuarioRepository;
-	
+
 	//Método executado quando a página é aberta
 	@RequestMapping(value = "/recuperar-senha") // Rota no navegador
-	public ModelAndView RecuperarSenha() {
+	public ModelAndView recuperarSenha() {
 		
 		// WEB-INF/views/recuperar-senha.jsp
 		ModelAndView modelAndView = new ModelAndView("recuperar-senha");
@@ -31,51 +31,48 @@ public class RecuperarSenhaController {
 		return modelAndView;
 	}
 	
+	//Método para capturar o SUBMIT POST do formulário
 	@RequestMapping(value = "/recuperar-senha-post", method = RequestMethod.POST)
-	public ModelAndView RecuperarSenhaPost(RecuperarSenhaDto dto) {
+	public ModelAndView recuperarSenhaPost(RecuperarSenhaDto dto) {
 		
 		ModelAndView modelAndView = new ModelAndView("recuperar-senha");
 		
-		try {
-			
+		try {			
 			//consultar o usuário no banco de dados através do email informado
 			Usuario usuario = usuarioRepository.findByEmail(dto.getEmail());
 			
-				//verificando se o usuário foi encontrado
-			if(usuarioRepository != null) {
+			//verificando se o usuário foi encontrado
+			if(usuario != null) {
 				
 				//gerando uma nova senha para o usuário
 				Faker faker = new Faker();
 				usuario.setSenha(faker.internet().password(8, 10, true, true, true));
 				
-				//criando a mensagem que será enviada o email do usuário
+				//criando a mensagem que será enviada para o email do usuário
 				EmailMessageDto messageDto = new EmailMessageDto();
 				messageDto.setEmailDestinatario(usuario.getEmail());
 				messageDto.setAssunto("Recuperação de senha de usuário - Projeto Contas");
-				messageDto.setConteudoMensagem("Olá " + usuario.getNome() + "\n\n"+
-												"Uma nova senha de acesso foi gerada para você. " +
-												"Acesse o sistema com a senha: " + usuario.getSenha() + "\n\n" +
-												"Att\nEquipe COTI Informática");
-				
-				//enviando o email...
+				messageDto.setConteudoMensagem("Olá " + usuario.getNome() + "\n\n" +
+											   "Uma nova senha de acesso foi gerada para você. " + 
+						 					   "Acesse o sistema com a senha: " + usuario.getSenha() + "\n\n" +
+						 					   "Att\nEquipe COTI Informática");
+				//enviando o email..
 				EmailMessageHelper.send(messageDto);
 				//atualizar a senha no banco de dados
 				usuarioRepository.update(usuario);
 				
-				modelAndView.addObject("mensagem", "Recuperação de senha realizada com sucesso. Verifique sua caixa de email");
+				modelAndView.addObject("mensagem", "Recuperação de senha realizada com sucesso. Verifique sua caixa de email.");
 				dto = new RecuperarSenhaDto();
-				
-			}else {
-				modelAndView.addObject("mensagem", "Usuário não encontrado, verifique o email informado");
 			}
-			
-					
-		} catch (Exception e) {
+			else {
+				modelAndView.addObject("mensagem", "Usuário não encontrado, verifique o email informado.");
+			}
+		}
+		catch(Exception e) {
 			modelAndView.addObject("mensagem", "Falha ao recuperar senha: " + e.getMessage());
-		}  
+		}
 		
-		
-		modelAndView.addObject("dto", dto);
+		modelAndView.addObject("dto", dto);		
 		return modelAndView;
 	}
 }

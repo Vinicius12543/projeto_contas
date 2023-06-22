@@ -8,8 +8,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class DashboardDto {
-	
+
 	private String name;
 	private Double value;
-	
+
 }
